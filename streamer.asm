@@ -5,9 +5,9 @@
 ; http://kernelturk.blogspot.com
 
 ; Burada yer alan kodlar, Anti-Sanbox, Debugger Detection, Patch Detection, Anti-Analysis
-; Debugger Attacks, Debugger Blocker, VM Detection ve daha bir çok low-level protection 
+; Debugger Attacks, Debugger Blocker, VM Detection ve daha bir Ã§ok low-level protection 
 ; teknigini akici ve yalin bir sekilde anlatmak maksadi ile hazirlanmistir. 
-; Mumkun oldugunca aciklayici yorumlar eklenmistir. Ancak daha detaylý bilgiler icin
+; Mumkun oldugunca aciklayici yorumlar eklenmistir. Ancak daha detaylÃ½ bilgiler icin
 ; yazarin http://kernelturk.blogspot.com adli blog sayfasi ziyaret edilebilir.
 
 ; Aralik 2013 - 32 bit Process Code ve Dll Injection ornegi eklendi. 
@@ -97,30 +97,30 @@ includelib \masm32\lib\shlwapi.lib
 .data
 sOlly				db "OllyDbg",0
 sWinDbg 			db "WinDbgFrameClass",0
-sTIda				db	"TIdaWindow",0
-sImmun				db	"ID",0
+sTIda				db "TIdaWindow",0
+sImmun				db "ID",0
 sProcMon 			db "PROCM0N_WINDOW_CLASS",0
-sProcExp 			db	"PROCEXPL",0
-sProcHck 			db	"ProcessHacker",0
+sProcExp 			db "PROCEXPL",0
+sProcHck 			db "ProcessHacker",0
 szTestKey 			db 'SYSTEM\\CurrentControlSet\\Control',0
 szImmh 				db 'SystemStartOptions',0
-szREGSZ 			db  'REG_SZ',0
+szREGSZ 			db 'REG_SZ',0
 szFind4Me 			db 'DEBUGPORT',0
 inName 				db 'eicar.zip',0
-Hedef_Baslik 		db "Putty Configuration",0
-Hedef_Sinif 		db "PuTTYConfigBox",0
+Hedef_Baslik 		        db "Putty Configuration",0
+Hedef_Sinif 		        db "PuTTYConfigBox",0
 c_Ntdll 			db "ntdll.dll",0
-c_NtCreateThreadEx 	db "NtCreateThreadEx",0
+c_NtCreateThreadEx 	        db "NtCreateThreadEx",0
 myNameIs			db "streamer.exe",0
 szStreamer 			db "streamer.scr",0
 strExplorer			db "explorer.exe",0
 szTaskBar			db "Shell_TrayWnd",0
 trendATD			db "c:\firus",0
-lpszLibraryName		db "C:\windows\system32\urlmon.dll",0
-szGetTickCount		db "GetTickCount",0
+lpszLibraryName			db "C:\windows\system32\urlmon.dll",0
+szGetTickCount			db "GetTickCount",0
 inUrl      			db  "https://secure.eicar.org/eicar_com.zip",0
-bDebuggerPresent 	db 0h
-dwDebugPort 		dw 0h
+bDebuggerPresent 		db 0h
+dwDebugPort 			dw 0h
 i dd 0h
 writer 				db 069h,062h,072h,061h,068h,069h,06dh,020h,061h,06bh,067h,075h,06ch,00h
 WSTR exStr,"explorer.exe"
@@ -208,9 +208,9 @@ pMyName dd ?
 .code
 start:
 ; dummy code
-; Çogu APT analiz ürünü Runtime esnasýnda analiz ettikleri sample'in adýný deðiþtirerek iþe baþlarlar. 
-; Böylece her sample için atanan uniqe ve analiz süresince ayný kalan dosya adý sayesinde 
-; farkli analiz aþamalarýnda ki bilgi deðiþ tokuþu saðlanmýþ olur. 
+; Ã‡ogu APT analiz Ã¼rÃ¼nÃ¼ Runtime esnasÃ½nda analiz ettikleri sample'in adÄ±nÄ± deÄŸiÅŸtirerek iÅŸe baÅŸlarlar. 
+; BÃ¶ylece her sample iÃ§in atanan unique ve analiz sÃ¼resince aynÄ± kalan dosya adÄ± sayesinde 
+; farkli analiz aÅŸamalarÄ±nda ki bilgi deÄŸiÅŸ tokuÅŸu saÄŸlanmÄ±ÅŸ olur. 
 
 mov eax,dword ptr [esp]
 xor eax,eax
@@ -218,50 +218,38 @@ DecodeMe myStr,02fh, SIZEOF myStr+2
 nop
 mov edi,edi
 nop
-; /////// process->name check internals
-;push ebp
-;mov ebp,esp
-;xor ecx,ecx
-;xor esi,esi							; db 031h, 0F6h, 
-;push esi							; db 056h,
-;assume fs:nothing
-;mov esi, dword ptr fs:[esi+30h]		; db 064h, 08Bh, 076h, 030h,
-;nop
-;mov esi, dword ptr ds:[esi+0Ch] 	; db 08Bh, 076h, 0Ch,
-;nop
-;mov esi, dword ptr ds:[esi+14h] 	; db 08Bh, 076h, 01Ch
-;add eax,1
-;sub eax,1
-;mov esi, dword ptr ds:[esi+28h] 	; db 08Bh, 076h, 028h
-;mov edi, offset myStr
-;CmpUni esi, edi, sizeof myStr+2  
-;test eax,eax
-;je _end
-;print "Immmmmaaah ",13,10
+;/////// process->name , kendi calisan processemize ait process name'i PEB den ogreniyoruz. 
+push ebp
+mov ebp,esp
+xor ecx,ecx
+xor esi,esi							; db 031h, 0F6h, 
+push esi							; db 056h,
+assume fs:nothing
+mov esi, dword ptr fs:[esi+30h]					; db 064h, 08Bh, 076h, 030h,
+nop
+mov esi, dword ptr ds:[esi+0Ch] 				; db 08Bh, 076h, 0Ch,
+nop
+mov esi, dword ptr ds:[esi+14h] 				; db 08Bh, 076h, 01Ch
+add eax,1
+sub eax,1
+mov esi, dword ptr ds:[esi+28h] 				; db 08Bh, 076h, 028h
+mov edi, offset myStr
+CmpUni esi, edi, sizeof myStr+2  
+test eax,eax
+je _end
+print "Immmmmaaah ",13,10
 
-;;DecodMe trendATD,02fh,SIZEOF trendATD
-;invoke GetCurrentDirectory, MAX_PATH,addr curDir
-;invoke lstrcmpi,addr curDir, addr trendATD
-;test eax,eax
-;je _end
+DecodMe trendATD,02fh,SIZEOF trendATD
+invoke GetCurrentDirectory, MAX_PATH,addr curDir
+invoke lstrcmpi,addr curDir, addr trendATD
+test eax,eax
+je _end
 
-;mkdir "C:\SandCastle"
-;test eax,eax
-;je _end
+mkdir "C:\SandCastle"
+test eax,eax
+je _end
 
-;invoke CryptAcquireContext, ADDR hProv, NULL, NULL, PROV_RSA_AES, CRYPT_VERIFYCONTEXT
-;test eax,eax
-;je _end
-;invoke CryptCreateHash,hProv, ALG_CLASS_HASH or ALG_TYPE_ANY or ALG_SID_MD5, 0, 0, ADDR hHash
-;invoke CryptHashData,hHash, ADDR pass, SIZEOF pass, 0
-;invoke CryptDeriveKey,hProv,ALG_CLASS_DATA_ENCRYPT or ALG_TYPE_BLOCK or ALG_SID_AES_256,hHash, CRYPT_EXPORTABLE,ADDR hKey2c
-;invoke CryptDecrypt, hKey2c, 0, TRUE, 0, ADDR inUrl, ADDR inUrlLen
-;test eax,eax
-;je _end
-;invoke CryptDestroyHash, hHash
-;invoke CryptReleaseContext, hProv, 0
-mov addrYeni, offset sifrelemeye_basla
-;invoke VirtualProtect,addrYeni,01000h, PAGE_EXECUTE_READWRITE, addr addrEski
+	mov addrYeni, offset sifrelemeye_basla
 	NTVirtualProtect typedef PROTO STDCALL :DWORD,:DWORD,:DWORD,:DWORD
 	PNTVirtualProtect typedef ptr NTVirtualProtect
 	fn GetProcAddress,rv(GetModuleHandle,"kernel32.dll"),"VirtualProtect"
@@ -269,21 +257,6 @@ mov addrYeni, offset sifrelemeye_basla
 	mov ecx, esp
 	mov edx,[esp]
 	invoke PNTVirtualProtect ptr edx, addrYeni,02000h, PAGE_EXECUTE_READWRITE, addr addrEski
-;lea ebx,sifrelemeyi_bitir
-;lea edx,sifrelemeye_basla
-;sub ebx,edx
-;mov ecx,ebx
-;xor eax,eax
-;mov edi, offset sifrelemeye_basla
-;sifrelemeye_devam:
-;mov al, byte ptr[edi]
-;xor al,02fh
-;mov byte ptr[edi],al
-;add edi,1
-;sub ecx,1
-;test ecx,ecx
-;jne sifrelemeye_devam
-;nop
 
 ; ///////// .code section icin decrypt fazi 
 lea ebx,sifrelemeyi_bitir
@@ -305,6 +278,7 @@ nop
 jmp deadbeef
 db 0deh,0adh,0beh,0efh
 deadbeef:
+
 sifrelemeye_basla:
 
 	invoke GetCurrentProcess
@@ -312,13 +286,16 @@ sifrelemeye_basla:
 	mov ecx, sizeof _PROCESS_BASIC_INFORMATION
 	mov dword ptr[szPBI],ecx
 	NTQUERYINFORMATIONPROCESS typedef proto stdcall :HANDLE,:UINT,:PVOID,:ULONG,:PULONG
-    PNTQUERYINFORMATIONPROCESS typedef ptr NTQUERYINFORMATIONPROCESS
+    	PNTQUERYINFORMATIONPROCESS typedef ptr NTQUERYINFORMATIONPROCESS
 	fn GetProcAddress,rv(GetModuleHandle,"ntdll.dll"),"NtQueryInformationProcess"
+	
 	push eax	; NtQueryInformationProcess'i call edecegimiz adres eax icinde
-	invoke GetCurrentProcess ; eax ezildi yukarýda bu yüzden stack'e push ettik
+	invoke GetCurrentProcess ; eax ezildi yukarÃ½da bu yÃ¼zden stack'e push ettik
 	mov ecx, esp  
-	mov edx, [esp] ; NtQueryInformationProcess'in adresini eax le stacke atmýþtýk þimdi geri alýyoruz
+	mov edx, [esp] ; NtQueryInformationProcess'in adresini eax le stacke atmÃ½Ã¾tÃ½k Ã¾imdi geri alÃ½yoruz
+	
 	;NtQueryInformationProcess(hProcess,ProcessBasicInformation,m_pBuffer,sizeof(PROCESS_BASIC_INFORMATION),&retBytes
+	
 	invoke PNTQUERYINFORMATIONPROCESS ptr edx,dword ptr[hOwn],0,offset ppidp,dword ptr[szPBI],offset szPpid 
 	mov eax,offset ppidp
 	assume eax:PTR _PROCESS_BASIC_INFORMATION
@@ -329,7 +306,6 @@ sifrelemeye_basla:
 	mov dword ptr[hPidHandle],eax
 
 	;invoke QueryFullProcessImageNameA,dword ptr[hExplorer], 0, addr szExplorer,addr MAX_PATH); or as below
-
 	mov dword ptr [szMAX_PATH],MAX_PATH
 	NTQueryFullProcessImageName typedef PROTO STDCALL :DWORD,:DWORD,:DWORD,:DWORD
 	PNTQueryFullProcessImageName typedef ptr NTQueryFullProcessImageName
@@ -372,13 +348,13 @@ sifrelemeye_basla:
 ; yaptigi isin aynini yapar. PEB.BeingDebugged flag'i o an calisan processin bir debugger vasitasi ile
 ; hafizaya alindigi durumlarda sifir disinda bir deger alir. 
 	assume fs:nothing 				; fs TIB'u gostermeli. TIB icin bknz:kernelturk.blogspot.com
-	mov eax, dword ptr FS:[30h]		; eax artýk peb'i gosteriyor
-	movzx eax, byte ptr[eax + 02]	; PEB.BeingDebugged da ki deðeri alalim
+	mov eax, dword ptr FS:[30h]		; eax artÃ½k peb'i gosteriyor
+	movzx eax, byte ptr[eax + 02]	; PEB.BeingDebugged da ki deÃ°eri alalim
 	test eax,eax					; 0'mi
 	jnz	debugger_found_1			; degilse kod debug ediliyor
 
 ;phase_2
-;Process'imiz bir debugger tarafýndan hafizaya alindiysa bu flag 0 dýþýnda baþka bir deðer alýr.
+;Process'imiz bir debugger tarafÃ½ndan hafizaya alindiysa bu flag 0 dÃ½Ã¾Ã½nda baÃ¾ka bir deÃ°er alÃ½r.
 	assume fs:nothing
 	mov eax, dword ptr FS:[30h]
 	cmp byte ptr [eax + 68h], 0 ; debug edilmiyorken PEB.NtGlobalFlag 0 dir.
@@ -386,13 +362,13 @@ sifrelemeye_basla:
 
 ;phase_3
 	assume fs:nothing
-	xor edx, edx					; FS ile PEB'e ulaþmanýn bir baþka yoðurt yeme þekli
-	mov eax, dword ptr FS:[EDX+30h] ; Sonuçta FS:30h olsun yeter
+	xor edx, edx					; FS ile PEB'e ulaÃ¾manÃ½n bir baÃ¾ka yoÃ°urt yeme Ã¾ekli
+	mov eax, dword ptr FS:[EDX+30h] ; SonuÃ§ta FS:30h olsun yeter
 	mov eax, [eax + 18h] 			; eax == PEB.ProcessHeap
-	cmp byte ptr [eax + 40h], 2h 	; PEB.ProcessHeap.Flags default deðerleri için kontrol ediyoruz.
+	cmp byte ptr [eax + 40h], 2h 	; PEB.ProcessHeap.Flags default deÃ°erleri iÃ§in kontrol ediyoruz.
 	jne	debugger_found_3_1
 
-	cmp dword ptr [eax + 43h], 00 	; PEB.ProcessHeap.ForceFlags default deðerleri için kontrol ediyoruz.
+	cmp dword ptr [eax + 43h], 00 	; PEB.ProcessHeap.ForceFlags default deÃ°erleri iÃ§in kontrol ediyoruz.
 	jne debugger_found_3_2
 
 ;phase_4
@@ -411,12 +387,11 @@ sifrelemeye_basla:
 	
 	
 	
-	cmp	byte ptr[bDebuggerPresent], 0 ; Bu process aktif debug halinde ise deðer sýfýr deðildir
+	cmp	byte ptr[bDebuggerPresent], 0 ; Bu process aktif debug halinde ise deÃ°er sÃ½fÃ½r deÃ°ildir
 	jne debugger_found_4_1
 
 ; Asagidaki kod blogu CheckRemoteDebuggerPresent api'sinin usermode da yer alan internal halidir.
 ; Aslinda yaptigi asagidakilerden ibarettir.
-	
 	
 	DecodeMe dwDebugPort,02fh,SIZEOF dwDebugPort
 	NTQUERYINFORMATIONPROCESS typedef proto stdcall :HANDLE,:UINT,:PVOID,:ULONG,:PULONG
@@ -424,36 +399,36 @@ sifrelemeye_basla:
 	
 	fn GetProcAddress,rv(GetModuleHandle,"ntdll.dll"),"NtQueryInformationProcess"
 	push eax	; NtQueryInformationProcess'i call edecegimiz adres eax icinde
-	invoke GetCurrentProcess ; eax ezildi yukarýda bu yüzden stack'e push ettik
+	invoke GetCurrentProcess ; eax ezildi yukarÃ½da bu yÃ¼zden stack'e push ettik
 	mov ecx, esp  
-	mov edx, [esp] ; NtQueryInformationProcess'in adresini eax le stacke atmýþtýk þimdi geri alýyoruz
+	mov edx, [esp] ; NtQueryInformationProcess'in adresini eax le stacke atmÄ±ÅŸtÄ±k ÅŸimdi geri alÄ±yoruz
 	invoke PNTQUERYINFORMATIONPROCESS ptr edx,eax,7,addr dwDebugPort,4,NULL ;7 = ProcessDebugPort
 	pop edx
-	cmp byte ptr [dwDebugPort], 0 ; deðer sýfýr dýþýnda bir þey ise debug ediliyoruz.
+	cmp byte ptr [dwDebugPort], 0 ; deÃ°er sÄ±fÄ±r dÄ±ÅŸÄ±nda bir ÅŸey ise debug ediliyoruz.
 	jne debugger_found_4_2
 
 ; phase_5
-; Processinizi biri debugger ile açmýþ ve üstüne birde step step kodlarý analiz ediyorsa bunu anlamak
-; için aþaðýda ki kod bloðunu devreye sokuyoruz. 
-	push exception_handler	; process içinde bu alanda oluþacak exception'larý biz handle edeceðiz
-	push dword ptr [FS:0]	; TIB'dan yararlanarak kendi SEH (Structured Exception Handling) yapýmýzý kuruyoruz
-	mov dword ptr [FS:0], esp ; artýk herhangi bir exception türediðinde bizim kodlarýmýz çalýþacak
+; Processinizi biri debugger ile aÃ§mÃ½Ã¾ ve Ã¼stÃ¼ne birde step step kodlarÄ± analiz ediyorsa bunu anlamak
+; iÃ§in aÅŸaÄŸÄ±da ki kod bloÄŸunu devreye sokuyoruz. 
+	push exception_handler	; process iÃ§inde bu alanda oluÃ¾acak exception'larÃ½ biz handle edeceÃ°iz
+	push dword ptr [FS:0]	; TIB'dan yararlanarak kendi SEH (Structured Exception Handling) yapÃ½mÃ½zÃ½ kuruyoruz
+	mov dword ptr [FS:0], esp ; artÃ½k herhangi bir exception tÃ¼rediÃ°inde bizim kodlarÃ½mÃ½z Ã§alÃ½Ã¾acak
 	
-	;kendi kontrolümüzde bir trap yapalým.
+	;kendi kontrolÃ¼mÃ¼zde bir trap yapalÃ½m.
 	xor eax,eax
-	int 3 ;bu kesme sonrasý bizim handler çalýþmalý
+	int 3 ;bu kesme sonrasÃ½ bizim handler Ã§alÃ½Ã¾malÃ½
 	
 	pop dword ptr [FS:0]
 	add esp, 4
 	
-	test eax, eax ;kendi handlerimiza uðradýysak eax = 0ffffffffh olmalý
+	test eax, eax ;kendi handlerimiza uÃ°radÃ½ysak eax = 0ffffffffh olmalÃ½
 	je debugger_found_5
 
 ;phase_6
-; Kodumuz debugger dýþýnda çalýþtýðýnda iki opcode arasý geçen zaman mikrosaniyeler civarýnda olur
-; Ancak debug edilirken step step yapýlan analizlerde bu zaman gayet uzun olabiliyor. Bizde bundan
-; yararlanarak iki opcode arasý zaman farkýný ölçerek belirlediðimiz limiti aþmasý durumunda debug
-; altýnda olduðumuzu anlýyabiliyoruz.
+; Kodumuz debugger dÃ½Ã¾Ã½nda Ã§alÃ½Ã¾tÃ½Ã°Ã½nda iki opcode arasÃ½ geÃ§en zaman mikrosaniyeler civarÃ½nda olur
+; Ancak debug edilirken step step yapÃ½lan analizlerde bu zaman gayet uzun olabiliyor. Bizde bundan
+; yararlanarak iki opcode arasÃ½ zaman farkÃ½nÃ½ Ã¶lÃ§erek belirlediÃ°imiz limiti aÃ¾masÃ½ durumunda debug
+; altÃ½nda olduÃ°umuzu anlÃ½yabiliyoruz.
 
 	;invoke GetTickCount
 	DecodeMe szGetTickCount,02fh,SIZEOF szGetTickCount
@@ -478,11 +453,11 @@ sifrelemeye_basla:
 	ja debugger_found_6
 	
 ; phase_7
-; Normalde bir process	çalýþýrken SeDebugPrivilege tokeni disable durumdadýr.
+; Normalde bir process	Ã§alÃ½Ã¾Ã½rken SeDebugPrivilege tokeni disable durumdadÃ½r.
 ; Lakin olly ve windbg gibi bir debugger ile debug ediliyorsa SeDebugPrivilege tokeni enable'dir
 ; Normal yetkilerde calisan bir process CSRSS.exe adli process'e erisemez ve erismek icin SeDebugPrivilege
-; tokenine sahip olmalýdýr. Bizde bu trick'i kullanarak trace edilen kodumuzdan csrss.exe processine
-; erismeyi deneyeceðiz. Eger erisebilirsek process'imiz debug ediliyor demektir .net
+; tokenine sahip olmalÃ½dÃ½r. Bizde bu trick'i kullanarak trace edilen kodumuzdan csrss.exe processine
+; erismeyi deneyeceÃ°iz. Eger erisebilirsek process'imiz debug ediliyor demektir .net
 
 	CSRGETPROCESSID typedef proto stdcall 
     PCSRGETPROCESSID typedef ptr CSRGETPROCESSID
@@ -490,10 +465,10 @@ sifrelemeye_basla:
 	NTOPENPROCESS typedef proto stdcall :HANDLE,:PBYTE,:HANDLE 
     PNTOPENPROCESS typedef ptr NTOPENPROCESS
 		
-	fn GetProcAddress,rv(GetModuleHandle,"ntdll.dll"),"CsrGetProcessId" ;Csrss.exe'nin bu func ile alacaðýz
+	fn GetProcAddress,rv(GetModuleHandle,"ntdll.dll"),"CsrGetProcessId" ;Csrss.exe'nin bu func ile alacaÃ°Ã½z
 	push eax ;adres eax de
 	mov ecx, esp
-	mov edx, [esp] ;artýk edx'de
+	mov edx, [esp] ;artÃ½k edx'de
 	invoke PCSRGETPROCESSID ptr edx
 	mov esi,eax ;csrss.exe pid'i esi de
 	push esi
@@ -501,20 +476,20 @@ sifrelemeye_basla:
 	push eax
 	mov ecx, esp
 	mov edx, [esp]
-	invoke PNTOPENPROCESS ptr edx, 0400h, 0, esi ;csrss'e eriþmeyi dene
+	invoke PNTOPENPROCESS ptr edx, 0400h, 0, esi ;csrss'e eriÃ¾meyi dene
 	test eax,eax ;erisebilirsek eax==0
 	je debugger_found_7
 	nop
 
 ; phase_8
-; Bildiðiniz gibi her usermode process'inin birde parent'i oluyor ve bu parent genelde Explorer.exe'dir
-; Bizde aþaðýda ki kod bloðu ile kendi aktif parent process'imizi bulacaðýz ve eðer explorer.exe deðil ise
-; reverser'imizi (bu siz oluyorsunuz) cezalandýracaðýz.
+; BildiÃ°iniz gibi her usermode process'inin birde parent'i oluyor ve bu parent genelde Explorer.exe'dir
+; Bizde aÃ¾aÃ°Ã½da ki kod bloÃ°u ile kendi aktif parent process'imizi bulacaÃ°Ã½z ve eÃ°er explorer.exe deÃ°il ise
+; reverser'imizi (bu siz oluyorsunuz) cezalandÃ½racaÃ°Ã½z.
 	invoke GetCurrentProcessId
 	mov dword ptr [myPid],eax
 	DecodeMe exStr,02fh,SIZEOF exStr+2
 	DecodeMe myStr,02fh,SIZEOF myStr+2
-	;invoke CreateToolhelp32Snapshot,TH32CS_SNAPPROCESS+TH32CS_SNAPMODULE,0 ;process list'e eriþim isteði yapiyoruz
+	;invoke CreateToolhelp32Snapshot,TH32CS_SNAPPROCESS+TH32CS_SNAPMODULE,0 ;process list'e eriÃ¾im isteÃ°i yapiyoruz
 	NTCreateToolhelp32Snapshot typedef PROTO STDCALL :DWORD,:DWORD
 	PNTCreateToolhelp32Snapshot typedef ptr NTCreateToolhelp32Snapshot
 	fn GetProcAddress,rv(GetModuleHandle,"kernel32.dll"),"CreateToolhelp32Snapshot"
@@ -525,7 +500,7 @@ sifrelemeye_basla:
 	mov hSnap,eax
 	mov edx, offset process32 ; process bilgileri bu yapiya dolacak
 	mov dword ptr[edx], sizeof PROCESSENTRY32W
-	;invoke Process32FirstW,hSnap,addr process32 ; ilk processden baþlýyoruz
+	;invoke Process32FirstW,hSnap,addr process32 ; ilk processden baÃ¾lÃ½yoruz
 	NTProcess32FirstW typedef PROTO STDCALL :DWORD,:DWORD
 	PNTProcess32FirstW typedef ptr NTProcess32FirstW
 	fn GetProcAddress,rv(GetModuleHandle,"kernel32.dll"),"Process32FirstW"
@@ -539,10 +514,10 @@ sifrelemeye_basla:
 repeatme:
 ; explorer.exe pid icin aslinda GetShellWindow kullanabiliriz Buradaki senaryo reverser'in isini zorlastirmak oldugundan
 ; daha dolayli yolari tercih ediyoruz. 
-	invoke lstrcmpW, addr exStr, addr [process32.szExeFile] ;explorer.exe stringini arýyoruz
+	invoke lstrcmpW, addr exStr, addr [process32.szExeFile] ;explorer.exe stringini arÃ½yoruz
 ; masm32 macrolari ile cmp eax,0 jz xxx yerine alisildik .if conditinoal'larini kullanabiliyoruz.
 	.IF (eax == 0)
-		mov edi, dword ptr [process32.th32ProcessID] ; explorer.exe stringini bulduk ve pid'sini alýyoruz
+		mov edi, dword ptr [process32.th32ProcessID] ; explorer.exe stringini bulduk ve pid'sini alÃ½yoruz
 		mov dword ptr[exPid],edi
 		xor edi,edi ; edi nin degeri sonraki fazlar icin sikinti cikarmasin diye sifirliyoruz
 		jmp beFree ; buldugumuza gore simdi kendi process'imizin parentid'si ni alalim.
@@ -644,14 +619,14 @@ repeatme2:
 	invoke PNTVirtualFree ptr edx,addr pMemory,0,MEM_RELEASE
 		retn
 	.ENDIF
-	assume eax:PTR _OBJECT_ALL_INFORMATION ; tüm nesne bilgileri bu array'de yer alacak
+	assume eax:PTR _OBJECT_ALL_INFORMATION ; tÃ¼m nesne bilgileri bu array'de yer alacak
 	mov eax, dword ptr [pMemory]
 	mov dword ptr [pObjectAllInfo],eax
 	mov ecx, dword ptr [eax].NumberOfObjectsTypes ;kac tane nesne bulduk, bu sayiya gore dongu kurup DebugObject nesnesini bulacagiz
 	mov eax, dword ptr[pObjectAllInfo]
 	assume eax:NOTHING
 
-	;biraz pointer aritmetiði yapýyoruz
+	;biraz pointer aritmetiÃ°i yapÃ½yoruz
 	add	eax, 4 
 	mov dword ptr [pObjInfLocation], eax
 	mov eax,dword ptr [pObjectAllInfo] ;
@@ -707,7 +682,7 @@ turn_ever:
 	add dword ptr [pObjectTypeInfo],04h 
 	mov eax, dword ptr [pObjectTypeInfo]
 	assume eax:PTR _OBJECT_TYPE_INFORMATION
-	; mevcut obje'ye ait pointer table'dan objenin ismini içeren unicode degerin adresini aliyoruz.
+	; mevcut obje'ye ait pointer table'dan objenin ismini iÃ§eren unicode degerin adresini aliyoruz.
 	mov ecx, dword ptr [eax+4] 
 	mov dword ptr [pObjInfLocation],ecx 
 	mov eax, dword ptr[pObjectTypeInfo]
@@ -715,7 +690,7 @@ turn_ever:
 	;obje ile isimiz bitti ve diger objeye gecis icin memory pointer'imizi ayarliyoruz
 	add ecx, dword ptr[pObjInfLocation] 
 	mov dword ptr [pObjInfLocation],ecx 
-	;biraz pointer aritmetiði
+	;biraz pointer aritmetiÃ°i
 	mov eax, dword ptr [pObjInfLocation]
 	and eax,0FFFFFFFCh
 	mov dword ptr [tmp],eax
@@ -795,8 +770,8 @@ DecodeMe sProcHck,02fh, SIZEOF sProcHck
 
 	
 ; phase_12
-; Bu method olly ve immunity gibi trace esnasýnda hardware breakpoint'leri handle edebilen
-; debuggerlarda iþe yarýyor. Basitce yaptigimiz sey bir memory alaný olusturup ona bekaret kilidi vurmak
+; Bu method olly ve immunity gibi trace esnasÃ½nda hardware breakpoint'leri handle edebilen
+; debuggerlarda iÃ¾e yarÃ½yor. Basitce yaptigimiz sey bir memory alanÃ½ olusturup ona bekaret kilidi vurmak
 ; ve ardindan kendimiz erismeyi deneyip bir exception turetmek. Sayet bu tureyen exceptionu olmasi gerektigi
 ; gibi bizim kendi tanimladigimiz exception handler kodu islerse sorun yok, ancak biz degil olly veya immun
 ; handle eder ise o zaman debug edildigimizi kolayca anlayabiliyoruz.
@@ -815,7 +790,7 @@ DecodeMe sProcHck,02fh, SIZEOF sProcHck
 		print "Bu sefer guldurmedi",13,10
 	.endif
 	mov dword ptr[pHafiz],eax
-   ; hafiza alanimizi retn komutunu icerecek sekilde manipule ediyoruz 2 retn komutunu ise tek bir istisna handler kullanmak icin yaptýk.
+   ; hafiza alanimizi retn komutunu icerecek sekilde manipule ediyoruz 2 retn komutunu ise tek bir istisna handler kullanmak icin yaptÃ½k.
 	mov word ptr[eax],0C3C3h 
 	
 	;ayirdigimiz hafiza alanini PAGE_GUARD flag'i ile koruma altina aliyoruz.
@@ -947,8 +922,8 @@ jmp phase16_17
 ;	inkey "Dump Almayi Deneyin"
 
 ; Phase 17
-; Debug edilen bir process baþka bir ring 3 debuggeri ile ayni anda debug edilebilir mi?
-; Cevabi aþaðýda bulabilirsiniz! Asagida ki kodlar ile processimizi linux'de ki gibi fork ediyoruz.
+; Debug edilen bir process baÃ¾ka bir ring 3 debuggeri ile ayni anda debug edilebilir mi?
+; Cevabi aÃ¾aÃ°Ã½da bulabilirsiniz! Asagida ki kodlar ile processimizi linux'de ki gibi fork ediyoruz.
 ; Boylece processlerimiz debugger ve debugee pozisyonuna geciyor. Baska debuggerlar
 ; duruma mudahil olmaya calistiginda ise buum.
 
@@ -986,22 +961,22 @@ phase16_17:
 	jmp debugger_not_found
 	
 exception_handler:
-; SEH ile çalýþtýðýmýzda istisna oluþmasý durumunda iþin içine win32 code'larý da girdiðinden 
-; kendi processimizin register'lar'ýna dilediðimiz gibi müdahale edemiyoruz. Manuel olarak çalýþacak
-; olan altta ki exception handler içinden ContextRecord yapýsý aracýlýðý ile orjinal
-; kod akýþýmýza geri döndüðümüzde hangi register'in ne deðer almasýný bu yapý aracýlýðý ile gerçekleþtiriyoruz.
-; Daha basit nasýl anlatýlýr bilemedim þimdi :) 
-; ContextRecord alanlarý için bknz: http://www.woodmann.com/crackz/Tutorials/Seh.htm
+; SEH ile Ã§alÃ½Ã¾tÃ½Ã°Ã½mÃ½zda istisna oluÃ¾masÃ½ durumunda iÃ¾in iÃ§ine win32 code'larÃ½ da girdiÃ°inden 
+; kendi processimizin register'lar'Ã½na dilediÃ°imiz gibi mÃ¼dahale edemiyoruz. Manuel olarak Ã§alÃ½Ã¾acak
+; olan altta ki exception handler iÃ§inden ContextRecord yapÃ½sÃ½ aracÃ½lÃ½Ã°Ã½ ile orjinal
+; kod akÃ½Ã¾Ã½mÃ½za geri dÃ¶ndÃ¼Ã°Ã¼mÃ¼zde hangi register'in ne deÃ°er almasÃ½nÃ½ bu yapÃ½ aracÃ½lÃ½Ã°Ã½ ile gerÃ§ekleÃ¾tiriyoruz.
+; Daha basit nasÃ½l anlatÃ½lÃ½r bilemedim Ã¾imdi :) 
+; ContextRecord alanlarÃ½ iÃ§in bknz: http://www.woodmann.com/crackz/Tutorials/Seh.htm
 
-	mov eax,[esp+0Ch] ;ContextRecord yapýsýna eriþiyoruz.
-	mov dword ptr[eax+0B0h],0bababebeh ;(ContextRecord.EAX) Orjinal kod akýþýna döndüðümüzde eax=ffff.. olsun
-	inc dword ptr [eax+0B8h] ; (ContextRecord.EIP + 1byte) nereye retn edeceðiz seçebiliyoruz ;)
+	mov eax,[esp+0Ch] ;ContextRecord yapÃ½sÃ½na eriÃ¾iyoruz.
+	mov dword ptr[eax+0B0h],0bababebeh ;(ContextRecord.EAX) Orjinal kod akÃ½Ã¾Ã½na dÃ¶ndÃ¼Ã°Ã¼mÃ¼zde eax=ffff.. olsun
+	inc dword ptr [eax+0B8h] ; (ContextRecord.EIP + 1byte) nereye retn edeceÃ°iz seÃ§ebiliyoruz ;)
 	xor eax,eax
 	retn
 	
 hardware_breakpoint_handler:
-	mov eax,[esp+0Ch] ;ContextRecord yapýsýna eriþiyoruz.
-	cmp dword ptr [eax+04h],0 ; Hardware Breakpoint yok ise Dr0-Dr3 sýfýr olmali
+	mov eax,[esp+0Ch] ;ContextRecord yapÃ½sÃ½na eriÃ¾iyoruz.
+	cmp dword ptr [eax+04h],0 ; Hardware Breakpoint yok ise Dr0-Dr3 sÃ½fÃ½r olmali
 	jne hard_bp_detect
 	cmp dword ptr [eax+08h],0 ; Dr1
 	jne hard_bp_detect
