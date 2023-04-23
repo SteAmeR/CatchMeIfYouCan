@@ -1,21 +1,26 @@
-; Created by Ibrahim Akgul - OCT 2013
+; Dev by Ibrahim Akgul - OCT 2013
 ; bilgislem@hotmail.com
 ; loginit@gmail.com
 ; https://plus.google.com/+IbrahimAkgul
 ; http://kernelturk.blogspot.com
 
-; Burada yer alan kodlar, Anti-Sanbox, Debugger Detection, Patch Detection, Anti-Analysis
+; The codes here are prepared to clearly explain Anti-Sandbox, Debugger Detection, Patch Detection, Anti-Analysis,
+; Debugger Attacks, Debugger Blocker, VM Detection, and many other low-level protection techniques.
+; Explanatory comments have been added as much as possible. However, for more detailed information,
+; the developer's blog site http://kernelturk.blogspot.com can be visited.
+
+; Burada yer alan kodlar, Anti-Sandbox, Debugger Detection, Patch Detection, Anti-Analysis
 ; Debugger Attacks, Debugger Blocker, VM Detection ve daha bir çok low-level protection 
 ; teknigini akici ve yalin bir sekilde anlatmak maksadi ile hazirlanmistir. 
-; Mumkun oldugunca aciklayici yorumlar eklenmistir. Ancak daha detaylý bilgiler icin
+; Mumkun oldugunca aciklayici yorumlar eklenmistir. Ancak daha detaylı bilgiler icin
 ; yazarin http://kernelturk.blogspot.com adli blog sayfasi ziyaret edilebilir.
 
-; Aralik 2013 - 32 bit Process Code ve Dll Injection ornegi eklendi. 
-; Subat 2014  - Fireeye Sandbox Bypass yetenegi eklendi.
-; Nisan 2014 - 64 bit Process Code Injection ornegi eklendi.
-; Ocak 2015 - McAfee ATD Sandbox bypass yetenegi eklendi.
-; Mart 2015 - Trend Micro Deep Discovery Analyzer Sandbox Bypass yetenegi eklendi.
-; Kasim 2015 - McAfee ATD Sandbox bypass eklendi.
+; Dec 2013 - Added 32 bit Process Code and Dll Injection skill. 
+; Feb 2014 - Added Fireeye Sandbox Bypass method.
+; Apr 2014 - Added 64 bit Process Code Injection skill.
+; Jan 2015 - Added McAfee ATD Sandbox bypass method.
+; Mar 2015 - Added Trend Micro Deep Discovery Analyzer Sandbox Bypass method.
+; Nov 2015 - Added Generic Sandboxes bypass techniques.
 
 ; TO-DO
 ; streamer.exe:PG$Secure to Avecto bypass 
