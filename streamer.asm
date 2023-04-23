@@ -4,7 +4,7 @@
 ; https://plus.google.com/+IbrahimAkgul
 ; http://kernelturk.blogspot.com
 
-; The codes here are prepared to clearly explain Anti-Sandbox, Debugger Detection, Patch Detection, Anti-Analysis,
+; The codes here are dev to clearly explain Anti-Sandbox, Debugger Detection, Patch Detection, Anti-Analysis,
 ; Debugger Attacks, Debugger Blocker, VM Detection, and many other low-level protection techniques.
 ; Explanatory comments have been added as much as possible. However, for more detailed information,
 ; the developer's blog site http://kernelturk.blogspot.com can be visited.
